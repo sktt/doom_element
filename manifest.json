@@ -2,6 +2,11 @@
   "name": "Doom element",
   "description": "ctrl+alt click to shoot down dom nodes. ctrl+z if you miss",
   "version": "1.0",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "manifest_version": 3,
   "permissions": ["scripting", "tabs"],
   "host_permissions": ["<all_urls>"],
