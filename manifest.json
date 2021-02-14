@@ -1,0 +1,11 @@
+{
+  "name": "Doom element",
+  "description": "ctrl+alt click to shoot down dom nodes. ctrl+z if you miss",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
