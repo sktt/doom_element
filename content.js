@@ -78,12 +78,16 @@
     if(!forceScrollableSet) {
       // sometimes break sites. buthuhm
       const style = document.createElement('style')
-      style.innerHTML  = '* { overflow-y: initial !important; }'
+      style.innerHTML  = '* { overflow-y: initial !important; filter: none!important; }'
       document.head.appendChild(style)
       forceScrollableSet = true
       // if they put important we have to do this too
       document.body.setAttribute('style', 'overflow-y: initial !important');
       document.documentElement.setAttribute('style', 'overflow-y: initial !important');
+    }
+
+    if(!target) {
+      setTarget(e.target)
     }
 
     const a = new Audio(AUDIO_PISTOL)
