@@ -46,9 +46,12 @@
     clickarea.style.height = `${height}px`;
     clickarea.style.display = 'block'
   }
-
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
   window.onkeydown = (e) => {
-    const combo = e.ctrlKey && e.altKey
+    let combo = e.ctrlKey && e.altKey
+    if (isMac) {
+      combo = e.metaKey && e.altKey
+    }
     if(!gunUp && combo) {
       a.play()
     }
