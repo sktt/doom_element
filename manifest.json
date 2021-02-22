@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Doom element",
   "description": "ctrl/cmd+alt click to shoot down dom nodes. ctrl/cmd+z if you miss",
   "version": "1.0",
@@ -8,9 +8,11 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "permissions": ["scripting", "tabs"],
-  "host_permissions": ["<all_urls>"],
-  "background": {
-    "service_worker": "background.js"
-  }
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": [ "content.js" ],
+      "run_at": "document_end"
+    }
+  ]
 }
