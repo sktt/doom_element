@@ -14,5 +14,28 @@
       "js": [ "content.js" ],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": false
+  },
+  "optional_permissions": [
+    "identity",
+    "tabs"
+  ],
+  "oauth2": {
+    "client_id": "26834793497-f4bhsvb32tpfpeoc9ud1ba4d40us5404.apps.googleusercontent.com",
+    "scopes": [
+      "email"
+    ]
+  },
+  "content_security_policy": "script-src 'self' https://staging.monetise.so/chrome-ext/ https://js.stripe.com/; object-src 'self'",
+  "externally_connectable": {
+    "matches": ["https://staging.monetise.so/api/*"]
+  },
+  "browser_action": {
+    "default_title": "DoomElement",
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  }
 }
