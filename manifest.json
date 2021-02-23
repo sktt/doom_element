@@ -19,10 +19,7 @@
     "page": "background.html",
     "persistent": false
   },
-  "optional_permissions": [
-    "identity",
-    "tabs"
-  ],
+  "optional_permissions": [ "identity" ],
   "oauth2": {
     "client_id": "26834793497-f4bhsvb32tpfpeoc9ud1ba4d40us5404.apps.googleusercontent.com",
     "scopes": [
@@ -37,5 +34,6 @@
     "default_title": "DoomElement",
     "default_icon": "icon.png",
     "default_popup": "popup.html"
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiyOOaeKxilbqLELKM19U9ycs3/HlwABiFoQUZyMIEUJpt3JOguttHC1d8A/WoLkTdxdRjIex5OAegXNoaefq5NFI0AG9l1sxwlMTgf9LjXUjo5uHF8GErC5bpovHR/E6NkK9WPp7LhmQsljiKlMn2oQwCO2IF/FecYf30XB/occBgFjzBJHfR/cejtLvs3WSazGFpC/ax+8BGwFBEJy45AoIrnLb6dRkZiSV/Pg0nDuk1awnwzoIZuC8rS1xmjjwjzRrvwtACYfxivid+D4nTkoC6+85elQS0dyj56rKIiw2I2RAkuWyitLhO+eMLcThtAsdG0DBVH0HBfHPKtqQPQIDAQAB"
 }
