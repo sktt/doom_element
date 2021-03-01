@@ -48,11 +48,10 @@
   }
   const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
   window.onkeydown = (e) => {
-    let combo = e.ctrlKey && e.altKey
-    if (isMac) {
-      combo = e.metaKey && e.altKey
-    }
-    if(!gunUp && combo) {
+    const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
+    const combo = cmdOrCtrl && e.altKey
+
+    if (!gunUp && combo) {
       a.play()
     }
 
@@ -107,7 +106,9 @@
   }, true)
 
   window.onkeypress = (e) => {
-    if (e.code === 'KeyZ' && e.ctrlKey) {
+    const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
+
+    if (e.code === 'KeyZ' && cmdOrCtrl) {
       const el = history.pop()
       el.style.display = ''
     }
