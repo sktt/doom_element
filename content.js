@@ -84,8 +84,8 @@
       document.head.appendChild(style)
       forceScrollableSet = true
       // if they put important we have to do this too
-      document.body.setAttribute('style', 'overflow-y: initial !important');
-      document.documentElement.setAttribute('style', 'overflow-y: initial !important');
+      document.body.setAttribute('style', `${document.body.getAttribute("style")} overflow-y: initial !important`);
+      document.documentElement.setAttribute('style', `${document.documentElement.getAttribute("style")} overflow-y: initial !important`);
     }
 
     if(!target) {
@@ -96,7 +96,7 @@
     a.play()
 
     clickarea.style.display = 'none'
-    target.setAttribute('style', 'display:none !important');
+    target.setAttribute('style', `${target.getAttribute("style")} display:none !important`);
     history.push(target)
 
     e.preventDefault()
