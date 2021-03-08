@@ -75,7 +75,7 @@
 
   let forceScrollableSet = false;
 
-  window.addEventListener('click', (e) => {
+  const handleClick = (e) => {
     if(!gunUp) return
     if(!forceScrollableSet) {
       // sometimes break sites. buthuhm
@@ -103,7 +103,19 @@
     e.stopPropagation()
     e.stopImmediatePropagation()
     document.getSelection().removeAllRanges()
-  }, true)
+  }
+  window.addEventListener('click', handleClick, true)
+
+  const listener = window.addEventListener('blur', (e) => {
+    // faky eventy, already lost focus
+    handleClick({
+      ...e,
+      target: document.activeElement,
+    })
+    // we've lost focus put down the gun (keyup events might no be captured
+    // otherwise), might be buggy behaviour
+    gunUp = false
+  });
 
   window.onkeypress = (e) => {
     const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
@@ -113,4 +125,6 @@
       el.style.display = ''
     }
   }
+
 })()
+
