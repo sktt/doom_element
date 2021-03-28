@@ -13,6 +13,7 @@
 
   let target = null
   const clickarea = document.createElement('div')
+  clickarea.id="-doom-clickarea"
   clickarea.style.position= "fixed";
   clickarea.style.display = "none";
   clickarea.style.border = "2px dashed red";
@@ -58,12 +59,26 @@
     gunUp = combo
     if (gunUp) {
       document.documentElement.style.cursor = CURSOR
+      overridePointerEventsCSS()
       setTarget([].slice.call(document.querySelectorAll(':hover')).pop())
     }
   }
 
+  function overridePointerEventsCSS() {
+    const style = document.getElementById("-doom-ptr-ev") || document.createElement('style')
+    style.id="-doom-ptr-ev"
+    style.innerHTML = '*:not(#-doom-clickarea) {pointer-events: initial !important;}'
+    document.body.appendChild(style)
+  }
+
+  function restorePointerEventsCSS() {
+    const style = document.getElementById("-doom-ptr-ev")
+    style.innerHTML = ''
+  }
+
   window.onkeyup = (e) => {
     gunUp = false
+    restorePointerEventsCSS()
     document.documentElement.style.cursor = ''
     setTarget(null)
   }
@@ -79,7 +94,8 @@
     if(!gunUp) return
     if(!forceScrollableSet) {
       // sometimes break sites. buthuhm
-      const style = document.createElement('style')
+      const style = document.getElementById("-doom-scroll") || document.createElement('style')
+      style.id = "-doom-scroll"
       style.innerHTML  = '* { overflow-y: initial !important; filter: none!important; }'
       document.head.appendChild(style)
       forceScrollableSet = true
