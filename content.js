@@ -73,18 +73,22 @@
 
   function restorePointerEventsCSS() {
     const style = document.getElementById("-doom-ptr-ev")
-    style.innerHTML = ""
+    if (style) {
+      style.innerHTML = ""
+    }
   }
 
   window.onkeyup = (e) => {
     gunUp = false
     restorePointerEventsCSS()
     document.documentElement.style.cursor = ""
+
     setTarget(null)
   }
 
   window.onmouseover = (e) => {
     if (!gunUp) return
+
     setTarget(e.target)
   }
 
@@ -111,13 +115,20 @@
     const a = new Audio(AUDIO_PISTOL)
     a.play()
 
+    console.log("fire at", target, target.nodeName, target.nodeName === "HTML")
+    if (target.nodeName === "HTML") {
+      console.log("propagate!!!")
+      window.parent.postMessage({ msg: "SHOOT_ME", location: location.href }, "*")
+    }
+
     clickarea.style.display = "none"
     target.setAttribute("style", `${target.getAttribute("style")} display:none !important`)
     history.push(target)
-
-    e.preventDefault()
-    e.stopPropagation()
-    e.stopImmediatePropagation()
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+    }
     document.getSelection().removeAllRanges()
   }
   window.addEventListener("click", handleClick, true)
@@ -141,4 +152,16 @@
       el.style.display = ""
     }
   }
+  window.addEventListener(
+    "message",
+    (e) => {
+      if (e.data && e.data.msg === "SHOOT_ME" && e.data.location) {
+        // unfortunately we can't ctrl z it...
+        document.querySelector(`iframe[src="${e.data.location}"]`).remove()
+        const a = new Audio(AUDIO_PISTOL)
+        a.play()
+      }
+    },
+    false
+  )
 })()
