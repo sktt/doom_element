@@ -1,5 +1,5 @@
-(() => {
-  if(window.__loadedContent) return
+;(() => {
+  if (window.__loadedContent) return
 
   window.__loadedContent = true
 
@@ -12,42 +12,42 @@
   let gunUp = false
 
   let target = null
-  const clickarea = document.createElement('div')
-  clickarea.id="-doom-clickarea"
-  clickarea.style.position= "fixed";
-  clickarea.style.display = "none";
-  clickarea.style.border = "2px dashed red";
+  const clickarea = document.createElement("div")
+  clickarea.id = "-doom-clickarea"
+  clickarea.style.position = "fixed"
+  clickarea.style.display = "none"
+  clickarea.style.border = "2px dashed red"
   // clickarea.style.backgroundColor = 'rgba(128,128,128,0.5)'
   // clickarea.style.boxShadow = '0 0 1px 1px inset red'
-  clickarea.style.pointerEvents ='none'
-  clickarea.style.zIndex = 2147483647;
-  clickarea.style.cursor = CURSOR;
+  clickarea.style.pointerEvents = "none"
+  clickarea.style.zIndex = 2147483647
+  clickarea.style.cursor = CURSOR
   document.body.appendChild(clickarea)
 
   const a = new Audio(AUDIO_RELOAD)
 
-  function setTarget (t) {
+  function setTarget(t) {
     if (target) {
       // before setting, reset change to previous target if any
-      target.style.pointerEvents = ''
-      target.style.cursor = ''
+      target.style.pointerEvents = ""
+      target.style.cursor = ""
     }
 
     target = t
     if (!target) {
-      clickarea.style.display = 'none'
+      clickarea.style.display = "none"
       return
     }
 
     target.style.cursor = CURSOR
-    const { top, left, width, height } = target.getBoundingClientRect();
-    clickarea.style.top = `${top}px`;
-    clickarea.style.left = `${left}px`;
-    clickarea.style.width = `${width}px`;
-    clickarea.style.height = `${height}px`;
-    clickarea.style.display = 'block'
+    const { top, left, width, height } = target.getBoundingClientRect()
+    clickarea.style.top = `${top}px`
+    clickarea.style.left = `${left}px`
+    clickarea.style.width = `${width}px`
+    clickarea.style.height = `${height}px`
+    clickarea.style.display = "block"
   }
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
   window.onkeydown = (e) => {
     const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
     const combo = cmdOrCtrl && e.altKey
@@ -60,26 +60,26 @@
     if (gunUp) {
       document.documentElement.style.cursor = CURSOR
       overridePointerEventsCSS()
-      setTarget([].slice.call(document.querySelectorAll(':hover')).pop())
+      setTarget([].slice.call(document.querySelectorAll(":hover")).pop())
     }
   }
 
   function overridePointerEventsCSS() {
-    const style = document.getElementById("-doom-ptr-ev") || document.createElement('style')
-    style.id="-doom-ptr-ev"
-    style.innerHTML = '*:not(#-doom-clickarea) {pointer-events: initial !important;}'
+    const style = document.getElementById("-doom-ptr-ev") || document.createElement("style")
+    style.id = "-doom-ptr-ev"
+    style.innerHTML = "*:not(#-doom-clickarea) {pointer-events: initial !important;}"
     document.body.appendChild(style)
   }
 
   function restorePointerEventsCSS() {
     const style = document.getElementById("-doom-ptr-ev")
-    style.innerHTML = ''
+    style.innerHTML = ""
   }
 
   window.onkeyup = (e) => {
     gunUp = false
     restorePointerEventsCSS()
-    document.documentElement.style.cursor = ''
+    document.documentElement.style.cursor = ""
     setTarget(null)
   }
 
@@ -88,31 +88,31 @@
     setTarget(e.target)
   }
 
-  let forceScrollableSet = false;
+  let forceScrollableSet = false
 
   const handleClick = (e) => {
-    if(!gunUp) return
-    if(!forceScrollableSet) {
+    if (!gunUp) return
+    if (!forceScrollableSet) {
       // sometimes break sites. buthuhm
-      const style = document.getElementById("-doom-scroll") || document.createElement('style')
+      const style = document.getElementById("-doom-scroll") || document.createElement("style")
       style.id = "-doom-scroll"
-      style.innerHTML  = '* { overflow-y: initial !important; filter: none!important; }'
+      style.innerHTML = "* { overflow-y: initial !important; filter: none!important; }"
       document.head.appendChild(style)
       forceScrollableSet = true
       // if they put important we have to do this too
-      document.body.setAttribute('style', `${document.body.getAttribute("style")} overflow-y: initial !important`);
-      document.documentElement.setAttribute('style', `${document.documentElement.getAttribute("style")} overflow-y: initial !important`);
+      document.body.setAttribute("style", `${document.body.getAttribute("style")} overflow-y: initial !important`)
+      document.documentElement.setAttribute("style", `${document.documentElement.getAttribute("style")} overflow-y: initial !important`)
     }
 
-    if(!target) {
+    if (!target) {
       setTarget(e.target)
     }
 
     const a = new Audio(AUDIO_PISTOL)
     a.play()
 
-    clickarea.style.display = 'none'
-    target.setAttribute('style', `${target.getAttribute("style")} display:none !important`);
+    clickarea.style.display = "none"
+    target.setAttribute("style", `${target.getAttribute("style")} display:none !important`)
     history.push(target)
 
     e.preventDefault()
@@ -120,9 +120,9 @@
     e.stopImmediatePropagation()
     document.getSelection().removeAllRanges()
   }
-  window.addEventListener('click', handleClick, true)
+  window.addEventListener("click", handleClick, true)
 
-  const listener = window.addEventListener('blur', (e) => {
+  const listener = window.addEventListener("blur", (e) => {
     // faky eventy, already lost focus
     handleClick({
       ...e,
@@ -131,16 +131,14 @@
     // we've lost focus put down the gun (keyup events might no be captured
     // otherwise), might be buggy behaviour
     gunUp = false
-  });
+  })
 
   window.onkeypress = (e) => {
     const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
 
-    if (e.code === 'KeyZ' && cmdOrCtrl) {
+    if (e.code === "KeyZ" && cmdOrCtrl) {
       const el = history.pop()
-      el.style.display = ''
+      el.style.display = ""
     }
   }
-
 })()
-
