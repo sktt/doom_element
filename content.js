@@ -25,6 +25,7 @@
   document.body.appendChild(clickarea)
 
   const a = new Audio(AUDIO_RELOAD)
+  a.volume = 0.5;
 
   function setTarget(t) {
     if (target) {
@@ -39,7 +40,6 @@
       return
     }
 
-    target.style.cursor = CURSOR
     const { top, left, width, height } = target.getBoundingClientRect()
     clickarea.style.top = `${top}px`
     clickarea.style.left = `${left}px`
@@ -48,6 +48,17 @@
     clickarea.style.display = "block"
   }
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
+  const shoot = () => {
+    const a = new Audio(AUDIO_PISTOL)
+    a.volume = 0.5;
+    a.play();
+    clickarea.style.display = "none"
+    target.dataset.origStyle = target.getAttribute("style");
+    target.setAttribute("style", `display:none !important`)
+    history.push(target)
+    // why did we need this...
+    document.getSelection().removeAllRanges()
+  }
   window.onkeydown = (e) => {
     const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
     const combo = cmdOrCtrl && e.altKey
@@ -107,59 +118,58 @@
       document.body.setAttribute("style", `${document.body.getAttribute("style")} overflow-y: initial !important`)
       document.documentElement.setAttribute("style", `${document.documentElement.getAttribute("style")} overflow-y: initial !important`)
     }
+    if (e) {
+      // dont trigger a click on that thing.
+      e.preventDefault && e.preventDefault()
+      e.stopPropagation && e.stopPropagation()
+      e.stopImmediatePropagation && e.stopImmediatePropagation()
+    }
 
     if (!target) {
       setTarget(e.target)
     }
 
-    const a = new Audio(AUDIO_PISTOL)
-    a.play()
-
-    console.log("fire at", target, target.nodeName, target.nodeName === "HTML")
     if (target.nodeName === "HTML") {
-      console.log("propagate!!!")
-      window.parent.postMessage({ msg: "SHOOT_ME", location: location.href }, "*")
+      console.log('send msg')
+      window.parent.postMessage({ msg: "shoot_iframe", location: location.href }, "*")
+    } else {
+      console.log('shoot you');
+      shoot()
     }
-
-    clickarea.style.display = "none"
-    target.setAttribute("style", `${target.getAttribute("style")} display:none !important`)
-    history.push(target)
-    if (e) {
-      e.preventDefault()
-      e.stopPropagation()
-      e.stopImmediatePropagation()
-    }
-    document.getSelection().removeAllRanges()
   }
   window.addEventListener("click", handleClick, true)
 
   const listener = window.addEventListener("blur", (e) => {
-    // faky eventy, already lost focus
-    handleClick({
-      ...e,
-      target: document.activeElement,
-    })
-    // we've lost focus put down the gun (keyup events might no be captured
-    // otherwise), might be buggy behaviour
-    gunUp = false
+    // we've lost focus of the window put down the gun. keyup events wont be
+    // captured.
+    window.onkeyup({})
   })
 
   window.onkeypress = (e) => {
     const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
 
-    if (e.code === "KeyZ" && cmdOrCtrl) {
+    if (e.code === "KeyZ" && cmdOrCtrl && history.length) {
       const el = history.pop()
-      el.style.display = ""
+      el.setAttribute("style", el.dataset.origStyle ?? "")
+      el.dataset.origStyle = null
+
+      // iframes need it to start recieve key events
+      el.focus()
     }
   }
+
+// handle an iframe. the event is captured inside the iframe, who cannot have
+// itself removed from the parent... window.close() does not work..
   window.addEventListener(
     "message",
     (e) => {
-      if (e.data && e.data.msg === "SHOOT_ME" && e.data.location) {
+      console.log('recv msg', e?.data?.msg)
+      if (e.data && e.data.msg === "shoot_iframe" && e.data.location) {
+        gunUp = true
         // unfortunately we can't ctrl z it...
-        document.querySelector(`iframe[src="${e.data.location}"]`).remove()
-        const a = new Audio(AUDIO_PISTOL)
-        a.play()
+        setTarget(document.querySelector(`iframe[src="${e.data.location}"]`))
+        console.log("parent: shoot you");
+        shoot();
       }
     },
     false
