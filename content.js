@@ -73,6 +73,15 @@
       overridePointerEventsCSS()
       setTarget([].slice.call(document.querySelectorAll(":hover")).pop())
     }
+
+    if (e.code === "KeyZ" && cmdOrCtrl && history.length) {
+      const el = history.pop()
+      el.setAttribute("style", el.dataset.origStyle ?? "")
+      el.dataset.origStyle = null
+
+      // iframes need it to start recieve key events
+      el.focus()
+    }
   }
 
   function overridePointerEventsCSS() {
@@ -105,7 +114,7 @@
 
   let forceScrollableSet = false
 
-  const handleClick = (e) => {
+  const handleMouseup = (e) => {
     if (!gunUp) return
     if (!forceScrollableSet) {
       // sometimes break sites. buthuhm
@@ -137,26 +146,14 @@
       shoot()
     }
   }
-  window.addEventListener("click", handleClick, true)
+  window.addEventListener("mouseup", handleMouseup, true)
 
-  const listener = window.addEventListener("blur", (e) => {
+  const listener = window.addEventListener("blur", _ => {
     // we've lost focus of the window put down the gun. keyup events wont be
     // captured.
     window.onkeyup({})
   })
 
-  window.onkeypress = (e) => {
-    const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey
-
-    if (e.code === "KeyZ" && cmdOrCtrl && history.length) {
-      const el = history.pop()
-      el.setAttribute("style", el.dataset.origStyle ?? "")
-      el.dataset.origStyle = null
-
-      // iframes need it to start recieve key events
-      el.focus()
-    }
-  }
 
 // handle an iframe. the event is captured inside the iframe, who cannot have
 // itself removed from the parent... window.close() does not work..
