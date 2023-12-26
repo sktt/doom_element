@@ -27,7 +27,7 @@
   const a = new Audio(AUDIO_RELOAD)
   a.volume = 0.5;
 
-  function setTarget(t) {
+  const setTarget = function setTarget(t) {
     if (target) {
       // before setting, reset change to previous target if any
       target.style.pointerEvents = ""
@@ -120,12 +120,13 @@
       // sometimes break sites. buthuhm
       const style = document.getElementById("-doom-scroll") || document.createElement("style")
       style.id = "-doom-scroll"
+      // make everything scrollable to fix paywall ...
       style.innerHTML = "* { overflow-y: initial !important; filter: none!important; }"
       document.head.appendChild(style)
       forceScrollableSet = true
-      // if they put important we have to do this too
-      document.body.setAttribute("style", `${document.body.getAttribute("style")} overflow-y: initial !important`)
-      document.documentElement.setAttribute("style", `${document.documentElement.getAttribute("style")} overflow-y: initial !important`)
+      // if they put important we have to do this too.
+      document.body.setAttribute("style", `${document.body.getAttribute("style") ?? ""}; overflow-y: initial !important`)
+      document.documentElement.setAttribute("style", `${document.documentElement.getAttribute("style") ?? ""}; overflow-y: initial !important; position: initial !important`)
     }
     if (e) {
       // dont trigger a click on that thing.
@@ -139,33 +140,41 @@
     }
 
     if (target.nodeName === "HTML") {
-      console.log('send msg')
       window.parent.postMessage({ msg: "shoot_iframe", location: location.href }, "*")
     } else {
-      console.log('shoot you');
       shoot()
     }
   }
+
+  const preventClick = (e) => {
+    if (!gunUp) return
+
+    e.preventDefault && e.preventDefault()
+    e.stopPropagation && e.stopPropagation()
+    e.stopImmediatePropagation && e.stopImmediatePropagation()
+  }
+
+
+  window.addEventListener("mousedown", preventClick, true)
+  window.addEventListener("click", preventClick, true)
   window.addEventListener("mouseup", handleMouseup, true)
 
-  const listener = window.addEventListener("blur", _ => {
+  window.addEventListener("blur", _ => {
     // we've lost focus of the window put down the gun. keyup events wont be
     // captured.
     window.onkeyup({})
   })
 
 
-// handle an iframe. the event is captured inside the iframe, who cannot have
-// itself removed from the parent... window.close() does not work..
+  // handle an iframe. the event is captured inside the iframe, who cannot have
+  // itself removed from the parent... window.close() does not work..
   window.addEventListener(
     "message",
     (e) => {
-      console.log('recv msg', e?.data?.msg)
       if (e.data && e.data.msg === "shoot_iframe" && e.data.location) {
         gunUp = true
         // unfortunately we can't ctrl z it...
         setTarget(document.querySelector(`iframe[src="${e.data.location}"]`))
-        console.log("parent: shoot you");
         shoot();
       }
     },

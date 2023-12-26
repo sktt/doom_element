@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Doom element",
   "description": "ctrl/cmd+alt click to shoot down dom nodes. ctrl/cmd+z if you miss",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
